@@ -6,6 +6,8 @@ export default {
 	data: () => {
 		return {
 			theme: '',
+			name: '',
+			role: ''
 		};
 	},
 	created() {
@@ -14,6 +16,23 @@ export default {
 	mounted() {
 		feather.replace();
 		this.theme = localStorage.getItem('theme') || 'light';
+		const api_url = "https://bunny-hip-akita.ngrok-free.app"
+		// Fetch data from the API
+		fetch(api_url + '/api/method/xportfolio.api.getTemplateData')
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json(); // Parse the JSON response
+			})
+			.then(data => {
+				let d = JSON.parse(data.message)
+				this.name = d.name
+				this.role = d.role
+			})
+			.catch(error => {
+				console.error('There has been a problem with your fetch operation:', error);
+		});
 	},
 	updated() {
 		feather.replace();
@@ -31,12 +50,12 @@ export default {
 			<h1
 				class="font-general-semibold text-3xl md:text-3xl xl:text-4xl text-center sm:text-left text-ternary-dark dark:text-primary-light uppercase"
 			>
-				Hi, Iam Stoman
+				Hi, Iam {{name? name: 'loading...'}}
 			</h1>
 			<p
 				class="font-general-medium mt-2 text-lg sm:text-xl  xl:text-2xl text-center sm:text-left leading-none text-gray-400"
 			>
-				A Full-Stack Developer & Design Enthusiast
+				A {{role ? role: 'loading...'}}
 			</p>
 			<div class="flex justify-center sm:block">
 				<a
